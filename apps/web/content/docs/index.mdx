@@ -14,7 +14,7 @@ Every page renders into a fixed **1920 × 1080** canvas. Slides are arbitrary
 React components — not a constrained DSL.
 
 ```npm
-npx @open-slide/cli init my-deck
+npx @open-slide/cli init
 ```
 
 ## Why open-slide
@@ -35,11 +35,60 @@ deck — without you ever leaving the chat.
 - **Export to static HTML or PDF.** Self-contained output — share without a
   server.
 
+## A slide is a file
+
+A slide is a React component. The runtime renders one component at a time
+onto a fixed 1920×1080 canvas, scales it to fit the viewport, and hands you
+the navigation, hot reload, and present mode.
+
+Each deck lives under `slides/<kebab-case-id>/`. The entry is
+`slides/<id>/index.tsx`. Assets sit alongside in `slides/<id>/assets/`.
+
+```tsx title="slides/getting-started/index.tsx"
+import type { Page, SlideMeta } from '@open-slide/core';
+
+const Cover: Page = () => (
+  <div style={{ width: '100%', height: '100%', background: '#08090a', color: '#f7f8f8' }}>
+    <h1 style={{ fontSize: 188, letterSpacing: '-0.04em' }}>
+      Hello, <em style={{ color: '#7170ff' }}>open-slide</em>.
+    </h1>
+  </div>
+);
+
+export const meta: SlideMeta = { title: 'Getting started', theme: 'corporate' };
+export default [Cover] satisfies Page[];
+```
+
+Two rules: the default export is an array of components (one per page), and
+each component fills its container (`width: '100%'` / `height: '100%'`). No
+DSL, no markdown chain — if you can build it in React, it's a slide.
+
+## The 1920 × 1080 canvas
+
+Every page renders into a fixed 1920×1080 box. The runtime scales that box
+uniformly to fit the viewport, so the same slide looks identical on a phone,
+a 4K monitor, and a beamer.
+
+Fixed canvas + uniform scaling means every pixel coordinate you write is the
+coordinate that ships — preview, stage, and exported PDF stay in lockstep.
+The constants are exported if you need them:
+
+```ts
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from '@open-slide/core';
+// 1920 × 1080
+```
+
+Inside a page, two layout patterns work well: **absolute coordinates**
+(`position: absolute` + pixel values — predictable, easy for an agent to
+write) and **flex/grid centring** for content that flows. Avoid responsive
+breakpoints; the canvas is fixed. Container queries (`containerType:
+'inline-size'` + `cqw` units) are a useful middle ground for reusable
+widgets.
+
 ## What's next
 
 <Cards>
   <Card title="Get started" href="/docs/getting-started" />
-  <Card title="A slide is a file" href="/docs/concepts/slide-as-code" />
-  <Card title="The 1920 × 1080 canvas" href="/docs/concepts/canvas" />
-  <Card title="Inspector & comments" href="/docs/tools/inspector" />
+  <Card title="Create a slide" href="/docs/flow/create-slide" />
+  <Card title="Inspector & comments" href="/docs/core-feature/inspector" />
 </Cards>

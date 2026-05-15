@@ -1,0 +1,54 @@
+---
+title: /create-theme
+description: Extracts a theme from an existing deck (or a brief).
+---
+
+`/create-theme` codifies a visual recipe into a reusable theme file.
+Run it once your decks start sharing a visual language — turn the implicit
+recipe into a file the agent can read.
+
+## What it does
+
+Writes `themes/<id>.md` with the palette, type stack, layout vocabulary,
+and voice notes that future `/create-slide` calls can reference.
+
+The input can be:
+
+- **An existing deck.** The skill scans `slides/<id>/index.tsx`, distils the
+  recurring tokens, and writes them as markdown.
+- **A brief.** Describe the system in chat (*"warm editorial, serif display,
+  high-contrast palette"*) and the skill bootstraps a theme file from
+  scratch.
+
+## Output
+
+A markdown file under `themes/`:
+
+```md title="themes/corporate.md"
+# Corporate
+
+## Palette
+- ink: #0a0a0c
+- accent: #4a52b5
+- mint: #1f8458
+
+## Typography
+- display: 'Söhne', system-ui
+- mono: 'JetBrains Mono'
+
+## Voice
+- Tight, declarative, never coy.
+- One concept per slide.
+```
+
+See [Themes](/docs/core-feature/themes) for how a theme is consumed.
+
+## Using the theme
+
+Once the file exists, mention it by name on the next `/create-slide`:
+
+```text
+/create-slide for "Q3 board update — use the corporate theme"
+```
+
+The agent loads `themes/corporate.md` before writing the deck.

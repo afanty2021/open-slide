@@ -1,7 +1,11 @@
 ---
-title: Creating a slide
+title: Create a slide
 description: From empty folder to first page.
 ---
+
+open-slide is built around a tight loop: **init → create → iterate**. This
+page covers the *create* step. Once a deck exists, head to
+[Iterate](/docs/flow/iterate) for the feedback loop.
 
 ## With an agent
 
@@ -12,7 +16,8 @@ The recommended path — open your editor, ask:
 ```
 
 `/create-slide` asks four scoping questions, picks a deck id, plans the
-structure, and writes pages under `slides/<id>/index.tsx`.
+structure, and writes pages under `slides/<id>/index.tsx`. See
+[`/create-slide`](/docs/skills/create-slide) for the full skill walk-through.
 
 ## By hand
 
@@ -29,7 +34,7 @@ const Cover: Page = () => (
 
 const Outline: Page = () => <div>{/* ... */}</div>;
 
-export const meta: SlideMeta = { title: 'Intro', theme: 'dark' };
+export const meta: SlideMeta = { title: 'Intro', theme: 'corporate' };
 
 export default [Cover, Outline] satisfies Page[];
 ```

@@ -10,7 +10,7 @@ const Cover: Page = () => <div>{/* ... */}</div>;
 
 export const meta: SlideMeta = {
   title: 'Cover',
-  theme: 'dark',
+  theme: 'corporate',
 };
 
 export const notes = {
@@ -35,14 +35,14 @@ type Page = ComponentType;
 type SlideMeta = {
   /** Display title for the deck — used in the slide browser. */
   title?: string;
-  /** UI hint: 'light' inverts the chrome over a light deck. */
-  theme?: 'light' | 'dark';
+  /** Name of a theme under `themes/<id>.md`. The agent reads it before authoring. */
+  theme?: string;
 };
 ```
 
 ## `notes` (optional)
 
-A map of page index → markdown string. Surfaced in [presenter mode](/docs/tools/present-mode).
+A map of page index → markdown string. Surfaced in [presenter mode](/docs/core-feature/present-mode).
 
 ```ts
 export const notes: Record<number, string> = {
