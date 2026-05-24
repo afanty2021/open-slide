@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { type SlideComment, useComments } from '@/lib/inspector/use-comments';
 import { type Edit, type EditOp, type EditResult, useEditor } from '@/lib/inspector/use-editor';
 import { useLocale } from '@/lib/use-locale';
+import { AssetPickerDialog } from './asset-picker-dialog';
 import { ImageCropDialog, type ImageCropRect } from './image-crop-dialog';
 
 export type SelectedTarget = {
@@ -263,6 +264,7 @@ type InspectorCtx = {
   cancelEdits: () => void;
   committing: boolean;
   openCrop: (anchor: HTMLImageElement) => void;
+  openReplace: (anchor: HTMLElement) => void;
 };
 
 const Ctx = createContext<InspectorCtx | null>(null);
@@ -303,6 +305,11 @@ export function InspectorProvider({
     initialFit: 'cover' | 'contain';
     initialPosition: { x: number; y: number };
     initialRect: ImageCropRect | null;
+  } | null>(null);
+  const [replaceTarget, setReplaceTarget] = useState<{
+    line: number;
+    column: number;
+    anchor: HTMLElement;
   } | null>(null);
   const t = useLocale();
 
@@ -920,6 +927,16 @@ export function InspectorProvider({
     setSelected(null);
   }, []);
 
+  const openReplace = useCallback((anchor: HTMLElement) => {
+    const loc = anchor.dataset.slideLoc;
+    if (!loc) return;
+    const [lineStr, columnStr] = loc.split(':');
+    const line = Number(lineStr);
+    const column = Number(columnStr);
+    if (!Number.isFinite(line) || !Number.isFinite(column)) return;
+    setReplaceTarget({ line, column, anchor });
+  }, []);
+
   useEffect(() => {
     if (import.meta.env.PROD) return;
     const onKey = (e: KeyboardEvent) => {
@@ -973,6 +990,7 @@ export function InspectorProvider({
       cancelEdits,
       committing,
       openCrop,
+      openReplace,
     }),
     [
       slideId,
@@ -993,12 +1011,44 @@ export function InspectorProvider({
       cancelEdits,
       committing,
       openCrop,
+      openReplace,
     ],
   );
 
   return (
     <Ctx.Provider value={value}>
       {children}
+      {replaceTarget && (
+        <AssetPickerDialog
+          slideId={slideId}
+          onClose={() => setReplaceTarget(null)}
+          onPick={(asset, scope) => {
+            const { line, column, anchor } = replaceTarget;
+            const assetPath =
+              scope === 'global' ? `@assets/${asset.name}` : `./assets/${asset.name}`;
+            const ops: EditOp[] = [
+              {
+                kind: 'set-attr-asset',
+                attr: 'src',
+                assetPath,
+                previewUrl: asset.url,
+              },
+            ];
+            if (anchor.tagName === 'IMG' && anchor.isConnected) {
+              const cs = window.getComputedStyle(anchor);
+              if (cs.objectFit !== 'cover' && cs.objectFit !== 'contain') {
+                ops.push({ kind: 'set-style', key: 'objectFit', value: 'cover' });
+              }
+              const op = cs.objectPosition.trim();
+              if (!op || op === '0% 0%' || op === 'auto') {
+                ops.push({ kind: 'set-style', key: 'objectPosition', value: '50% 50%' });
+              }
+            }
+            bufferOps(line, column, anchor, ops);
+            setReplaceTarget(null);
+          }}
+        />
+      )}
       {cropTarget && (
         <ImageCropDialog
           src={cropTarget.src}
