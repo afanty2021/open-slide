@@ -1,5 +1,21 @@
 # @open-slide/core
 
+## 1.11.0
+
+### Minor Changes
+
+- [#207](https://github.com/1weiho/open-slide/pull/207) [`cb5ebf4`](https://github.com/1weiho/open-slide/commit/cb5ebf4208149417f072a29764431f091f123efa) Thanks [@ridemountainpig](https://github.com/ridemountainpig)! - Add `base` to `OpenSlideConfig` for hosting under a subpath (e.g. GitHub Pages, Nginx subdirectory). Wires through to Vite's `base` and React Router's `basename`.
+
+- [#203](https://github.com/1weiho/open-slide/pull/203) [`5561b41`](https://github.com/1weiho/open-slide/commit/5561b410f732291c4fedeed63b76eff5ca24d6ef) Thanks [@1weiho](https://github.com/1weiho)! - Add slide-view shortcuts: Space advances, Enter plays in window, P opens presenter mode (F stays fullscreen).
+
+### Patch Changes
+
+- [#209](https://github.com/1weiho/open-slide/pull/209) [`b45389c`](https://github.com/1weiho/open-slide/commit/b45389c62e112adc3a4b5d31a796da1858058e58) Thanks [@1weiho](https://github.com/1weiho)! - Fix homepage thumbnails flashing at full size before scaling down by measuring the fit scale before first paint.
+
+- [#208](https://github.com/1weiho/open-slide/pull/208) [`2cbc7b4`](https://github.com/1weiho/open-slide/commit/2cbc7b408bfa918aa01f1db57162740a5cc91a69) Thanks [@ridemountainpig](https://github.com/ridemountainpig)! - Presenter window now reflects in-slide `<Steps>` state: Now Showing mirrors the projection's revealed count, and Up Next previews the next step until the current slide's steps are exhausted before rolling over to the next slide.
+
+- [#197](https://github.com/1weiho/open-slide/pull/197) [`27230b3`](https://github.com/1weiho/open-slide/commit/27230b3213d53a6606d9c7d4d83d2c531f9aba44) Thanks [@mvanhorn](https://github.com/mvanhorn)! - Preserve raster backgrounds in PDF exports while stripping gradient layers.
+
 ## 1.10.0
 
 ### Minor Changes
